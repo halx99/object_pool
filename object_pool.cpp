@@ -1,4 +1,6 @@
 // object_pool.cpp: a simple & high-performance object pool implementation
+#include "stdafx.h"
+
 #if !defined(_OBJECT_POOL_CPP_)
 #define _OBJECT_POOL_CPP_
 
@@ -142,11 +144,22 @@ object_pool::free_link_node* object_pool::tidy_chunk(chunk_link chunk)
 }
 
 } // purelib::gc::detail
+
+std::shared_ptr<detail::object_pool> object_pool_manager::get_pool(size_t element_size, size_t element_count)
+{
+    detail::chunk_info key = { element_size, element_count };
+    auto it = this->pools_.find(key);
+    if (it != this->pools_.end())
+        return it->second;
+    it = this->pools_.emplace(key, std::shared_ptr<detail::object_pool>(new detail::object_pool(element_size, element_count))).first;
+    return it->second;
+}
+
 } // namespace purelib::gc
 }; // namespace purelib
 
 #endif // _OBJECT_POOL_CPP_
 /*
-* Copyright (c) 2012-2017 by HALX99,  ALL RIGHTS RESERVED.
+* Copyright (c) 2012-2018 by HALX99,  ALL RIGHTS RESERVED.
 * Consult your license regarding permissions and restrictions.
 **/
