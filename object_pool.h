@@ -131,8 +131,33 @@ public: \
         static purelib::gc::detail::object_pool s_pool(POOL_ESTIMATE_SIZE(ELEMENT_TYPE), ELEMENT_COUNT); \
         return s_pool; \
     }
-};
+}; // namespace detail
 
+template<typename _Ty, size_t _ElemCount = 512>
+class object_pool : public detail::object_pool
+{
+    object_pool(const object_pool&) = delete;
+    void operator= (const object_pool&) = delete;
+
+public:
+    object_pool(void) : detail::object_pool(POOL_ESTIMATE_SIZE(_Ty), _ElemCount)
+    {
+    }
+
+    template<typename..._Args>
+    _Ty* construct(const _Args&...args)
+    {
+        return new (get()) _Ty(args...);
+    }
+
+    void destroy(void* _Ptr)
+    {
+
+        ((_Ty*)_Ptr)->~_Ty(); // call the destructor
+        release(_Ptr);
+    }
+};
+    
 }; // namespace: purelib::gc
 }; // namespace: purelib
 
