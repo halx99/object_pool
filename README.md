@@ -15,8 +15,8 @@
 
 ```cpp
 #include "object_pool.hpp"
-yasio::object_pool<int> thread_safe_pool(128); // 创建线程安全对象池
-yasio::object_pool<int, void> pool(128); // 创建非线程安全对象池
+yasio::object_pool<int, std::mutex> thread_safe_pool(128); // 创建线程安全对象池
+yasio::object_pool<int> pool(128); // 创建非线程安全对象池
 
 auto value1 = pool.construct(2023);
 auto value2 = pool.construct(2024);
