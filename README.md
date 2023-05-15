@@ -18,9 +18,9 @@
 yasio::object_pool<int, std::mutex> thread_safe_pool(128); // 创建线程安全对象池
 yasio::object_pool<int> pool(128); // 创建非线程安全对象池
 
-auto value1 = pool.construct(2023);
-auto value2 = pool.construct(2024);
-auto value3 = pool.construct(2025);
+auto value1 = pool.create(2023);
+auto value2 = pool.create(2024);
+auto value3 = pool.create(2025);
 pool.destroy(value3);
 pool.destroy(value1);
 pool.destroy(value2);
